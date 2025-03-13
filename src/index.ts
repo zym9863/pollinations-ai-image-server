@@ -21,7 +21,7 @@ async function downloadImage(prompt: string) {
     fs.mkdirSync(cacheDir, { recursive: true });
   }
 
-  const imageUrl = `https://pollinations.ai/p/${encodeURIComponent(prompt)}?width=${width}&height=${height}&seed=${seed}&model=${model}`;
+  const imageUrl = `https://pollinations.ai/p/${encodeURIComponent(prompt)}?width=${width}&height=${height}&seed=${seed}&model=${model}&nologo=true`;
 
   try {
     const response = await fetch(imageUrl);
