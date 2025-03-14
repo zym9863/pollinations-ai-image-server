@@ -14,6 +14,7 @@ This is a TypeScript-based MCP server that implements an AI image generation sys
 ### Tools
 - `generate_image` - Generate images using Pollinations AI
   - Takes a prompt as required parameter
+  - Supports multiple image size options: 720x1280, 1280x720, 1024x1024 (default)
   - Downloads and saves the generated image to a temporary directory
   - Returns the file path of the saved image
 
@@ -57,10 +58,17 @@ Once configured, you can use the server with Claude Desktop by asking Claude to 
 
 "Please generate an image of a sunset over mountains using the pollinations-ai-image-server."
 
-The image will be generated using Pollinations AI with the following default settings:
-- Width: 1024px
-- Height: 1024px
+You can specify the image size by adding it to your request:
+"Generate a portrait (720x1280) image of a cat using pollinations-ai-image-server."
+
+Supported image sizes:
+- 720x1280 (portrait)
+- 1280x720 (landscape)
+- 1024x1024 (square, default)
+
+The image will be generated using Pollinations AI with the following settings:
 - Model: flux
+- Seed: 42
 
 The generated image will be saved to a temporary directory and the file path will be returned.
 

@@ -10,9 +10,28 @@ import path from 'path';
 import fetch from 'node-fetch';
 import os from 'os';
 
-async function downloadImage(prompt: string) {
-  const width = 1024;
-  const height = 1024;
+type SizeOption = '720x1280' | '1280x720' | '1024x1024';
+
+async function downloadImage(prompt: string, sizeOption: SizeOption = '1024x1024') {
+  let width: number;
+  let height: number;
+  
+  switch(sizeOption) {
+    case '720x1280':
+      width = 720;
+      height = 1280;
+      break;
+    case '1280x720':
+      width = 1280;
+      height = 720;
+      break;
+    case '1024x1024':
+    default:
+      width = 1024;
+      height = 1024;
+      break;
+  }
+  
   const seed = 42; 
   const model = 'flux'; 
 
@@ -65,6 +84,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               type: "string",
               description: "Prompt for image generation",
             },
+            size: {
+              type: "string",
+              description: "Image size (width x height)",
+              enum: ["720x1280", "1280x720", "1024x1024"],
+              default: "1024x1024"
+            }
           },
           required: ["prompt"],
         },
@@ -80,8 +105,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       throw new Error("Prompt is required");
     }
 
+    // 获取尺寸参数，如果未提供则使用默认值
+    const size = String(request.params.arguments?.size || "1024x1024") as SizeOption;
+    // 验证尺寸参数
+    if (!['720x1280', '1280x720', '1024x1024'].includes(size)) {
+      throw new Error("Invalid size option. Must be one of: 720x1280, 1280x720, 1024x1024");
+    }
+
     try {
-      const filePath = await downloadImage(prompt);
+      const filePath = await downloadImage(prompt, size);
       return {
         content: [{
           type: "text",
